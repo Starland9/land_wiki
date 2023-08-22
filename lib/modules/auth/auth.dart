@@ -11,7 +11,7 @@ class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthBloc(),
+      create: (context) => AuthBloc()..add(GoogleAuthenticate()),
       child: Scaffold(
         body: Center(
           child: Padding(
@@ -42,33 +42,38 @@ class AuthPage extends StatelessWidget {
                 const Spacer(
                   flex: 2,
                 ),
-                BlocBuilder<AuthBloc, AuthState>(
-                  buildWhen: (previous, current) => previous != current,
-                  builder: (context, state) {
-                    context.read<AuthBloc>().add(GoogleAuthenticate());
-                    if (state is AuthInitial) {
-                      return _buildGoogleSignButton(context);
-                    }
-
+                BlocListener<AuthBloc, AuthState>(
+                  listener: (context, state) {
                     if (state is AuthLoaded) {
-                      Future.delayed(const Duration(seconds: 2), () {
-                        context.read<AuthBloc>().add(GoToHome());
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ));
-                      });
-                      return Text("Bienvenue ${state.user.displayName}");
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ));
                     }
                     if (state is AuthError) {
-                      return Column(
-                        children: [
-                          Text(state.message),
-                          _buildGoogleSignButton(context),
-                        ],
-                      );
+                      print(state.message);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(state.message),
+                        duration: const Duration(seconds: 2),
+                      ));
                     }
-                    return const CircularProgressIndicator();
                   },
+                  child: BlocBuilder<AuthBloc, AuthState>(
+                    buildWhen: (previous, current) => previous != current,
+                    builder: (context, state) {
+                      if (state is AuthInitial) {
+                        return _buildGoogleSignButton(context);
+                      }
+
+                      if (state is AuthError) {
+                        return Column(
+                          children: [
+                            _buildGoogleSignButton(context),
+                          ],
+                        );
+                      }
+                      return const CircularProgressIndicator();
+                    },
+                  ),
                 ),
                 const Spacer(),
               ],

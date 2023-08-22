@@ -56,9 +56,7 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        floatingActionButton: FloatingAction(
-          tts: tts,
-        ),
+        floatingActionButton: FloatingAction(tts: tts),
       ),
     );
   }
