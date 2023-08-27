@@ -65,11 +65,17 @@ class SearchGoodBody extends StatefulWidget {
 }
 
 class _SearchGoodBodyState extends State<SearchGoodBody> {
-  final _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
+
+  Widget floatingButton = const SizedBox();
+  bool _jumpToTopIsvisible = false;
 
   @override
   void initState() {
-    _scrollController.addListener(_scrollListerner);
+    _scrollController.addListener(() {
+      _scrollListerner();
+    });
+
     super.initState();
   }
 
@@ -78,30 +84,22 @@ class _SearchGoodBodyState extends State<SearchGoodBody> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       body: Center(
-        child: SingleChildScrollView(
+        child: ListView(
           controller: _scrollController,
-          child: Column(
-            children: [
-              Text(
-                widget.title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const Divider(),
-              Text(
-                widget.body,
-                textAlign: TextAlign.justify,
-              ),
-            ],
-          ),
+          children: [
+            Text(
+              widget.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const Divider(),
+            Text(
+              widget.body,
+              textAlign: TextAlign.justify,
+            ),
+          ],
         ),
       ),
-      floatingActionButton: _scrollController.offset > 500
-          ? FloatingActionButton(
-              mini: true,
-              onPressed: _jumpToTop,
-              child: const Icon(Icons.arrow_upward),
-            )
-          : null,
+      floatingActionButton: floatingButton,
     );
   }
 
@@ -112,9 +110,22 @@ class _SearchGoodBodyState extends State<SearchGoodBody> {
   }
 
   void _scrollListerner() {
-    if (_scrollController.offset > 400 && _scrollController.offset < 600) {
-      setState(() {});
+    if (_scrollController.offset > 500 && !_jumpToTopIsvisible) {
+      _jumpToTopIsvisible = true;
     }
+    if (_scrollController.offset < 500 && _jumpToTopIsvisible) {
+      _jumpToTopIsvisible = false;
+    }
+
+    setState(() {
+      _jumpToTopIsvisible
+          ? floatingButton = FloatingActionButton(
+              mini: true,
+              onPressed: _jumpToTop,
+              child: const Icon(Icons.arrow_upward),
+            )
+          : floatingButton = const SizedBox();
+    });
   }
 
   void _jumpToTop() {
