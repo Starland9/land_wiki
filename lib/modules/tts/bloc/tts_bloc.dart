@@ -9,10 +9,7 @@ class TtsBloc extends Bloc<TtsEvent, TtsState> {
   TtsBloc() : super(TtsInitial()) {
     on<StartTts>(
       (event, emit) async {
-        emit(TtsRunning(
-          text: event.text,
-          tts: event.tts,
-        ));
+        emit(TtsRunning(text: event.text, tts: event.tts));
 
         event.tts.setLanguage("fr-FR");
         await event.tts.speak(event.text);

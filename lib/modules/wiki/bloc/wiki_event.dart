@@ -10,9 +10,7 @@ abstract class WikiEvent extends Equatable {
 class GetWiki extends WikiEvent {
   final String text;
 
-  const GetWiki({
-    required this.text,
-  });
+  const GetWiki({required this.text});
 
   @override
   List<Object> get props => [text];

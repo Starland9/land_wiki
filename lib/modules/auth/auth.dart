@@ -50,7 +50,6 @@ class AuthPage extends StatelessWidget {
                       ));
                     }
                     if (state is AuthError) {
-                      print(state.message);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(state.message),
                         duration: const Duration(seconds: 2),

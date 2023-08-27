@@ -14,9 +14,7 @@ class WikiLoading extends WikiState {}
 class WikiLoaded extends WikiState {
   final Wiki wiki;
 
-  const WikiLoaded({
-    required this.wiki,
-  });
+  const WikiLoaded({required this.wiki});
 
   @override
   List<Object> get props => [wiki];
@@ -25,9 +23,7 @@ class WikiLoaded extends WikiState {
 class WikiError extends WikiState {
   final String message;
 
-  const WikiError({
-    required this.message,
-  });
+  const WikiError({required this.message});
 
   @override
   List<Object> get props => [message];

@@ -19,31 +19,17 @@ class SearchBody extends StatelessWidget {
             );
           }
           if (state is WikiError) {
-            return Center(
+            return const Center(
               child: Text(
-                state.message,
-                style: const TextStyle(
-                  color: Colors.red,
-                ),
+                "Nous n'avons rien 🤔",
+                style: TextStyle(color: Colors.red),
               ),
             );
           }
           if (state is WikiLoaded) {
-            return Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Text(
-                      state.wiki.titre,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Divider(),
-                    Text(state.wiki.desc),
-                  ],
-                ),
-              ),
+            return SearchGoodBody(
+              title: state.wiki.titre,
+              body: state.wiki.desc,
             );
           }
           return const Center(
@@ -61,5 +47,78 @@ class SearchBody extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+class SearchGoodBody extends StatefulWidget {
+  const SearchGoodBody({
+    super.key,
+    required this.title,
+    required this.body,
+  });
+
+  final String title;
+  final String body;
+
+  @override
+  State<SearchGoodBody> createState() => _SearchGoodBodyState();
+}
+
+class _SearchGoodBodyState extends State<SearchGoodBody> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    _scrollController.addListener(_scrollListerner);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+      body: Center(
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              Text(
+                widget.title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const Divider(),
+              Text(
+                widget.body,
+                textAlign: TextAlign.justify,
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: _scrollController.offset > 500
+          ? FloatingActionButton(
+              mini: true,
+              onPressed: _jumpToTop,
+              child: const Icon(Icons.arrow_upward),
+            )
+          : null,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListerner() {
+    if (_scrollController.offset > 400 && _scrollController.offset < 600) {
+      setState(() {});
+    }
+  }
+
+  void _jumpToTop() {
+    _scrollController.animateTo(0,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
   }
 }

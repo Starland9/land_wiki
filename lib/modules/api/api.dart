@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:land_wiki/modules/api/consts.dart';
 import 'package:land_wiki/modules/wiki/model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,10 +11,15 @@ class AppApi {
   static Future getWiki({
     required String text,
   }) async {
-    String apiUrl = 'https://codingwiki.onrender.com/get/{$text}';
+    String apiUrl = 'https://cwiki.vercel.app/article';
 
     try {
-      var response = await http.get(Uri.parse(apiUrl));
+      var response = await http.post(Uri.parse(apiUrl),
+          body: jsonEncode({"query": text}),
+          headers: {
+            "Content-Type": "application/json",
+            "token": ApiConsts.token
+          });
 
       if (response.statusCode == 200) {
         var jsonData = json.decode(response.body);

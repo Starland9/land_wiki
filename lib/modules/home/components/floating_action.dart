@@ -7,7 +7,8 @@ import '../../wiki/bloc/wiki_bloc.dart';
 
 class FloatingAction extends StatelessWidget {
   const FloatingAction({
-    super.key, required this.tts,
+    super.key,
+    required this.tts,
   });
 
   final FlutterTts tts;
@@ -17,15 +18,15 @@ class FloatingAction extends StatelessWidget {
     return BlocBuilder<TtsBloc, TtsState>(
       buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
-        print(state);
         if (state is TtsInitial || state is TtsFinished) {
           return _buildBlocNoSpeak();
         }
 
         if (state is TtsError) {
           return FloatingActionButton.extended(
-              onPressed: () => context.read<TtsBloc>().add(StopTts(tts: tts)),
-              label: Text(state.message));
+            onPressed: () => context.read<TtsBloc>().add(StopTts(tts: tts)),
+            label: Text(state.message),
+          );
         } else {
           return _buildFloatIsSpeaking(context);
         }
@@ -59,10 +60,7 @@ class FloatingAction extends StatelessWidget {
       BuildContext context, WikiLoaded state) {
     return FloatingActionButton(
       onPressed: () => context.read<TtsBloc>().add(
-            StartTts(
-              text: state.wiki.desc,
-              tts: tts,
-            ),
+            StartTts(text: state.wiki.desc, tts: tts),
           ),
       child: const Icon(
         Icons.play_arrow,

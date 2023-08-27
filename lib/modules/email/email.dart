@@ -28,13 +28,9 @@ void main() {
   http.post(Uri.parse(url), body: payload, headers: headers).then((response) {
     // Vérifier la réponse
     if (response.statusCode == 200) {
-      print("E-mail envoyé avec succès.");
     } else {
       String errorMessage = json.decode(response.body)["message"] ??
           "Erreur lors de l'envoi de l'e-mail.";
-      print("Erreur : $errorMessage");
     }
-  }).catchError((error) {
-    print("Erreur lors de l'envoi de l'e-mail : $error");
-  });
+  }).catchError((error) {});
 }
